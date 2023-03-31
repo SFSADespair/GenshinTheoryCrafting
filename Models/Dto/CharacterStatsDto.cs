@@ -1,13 +1,17 @@
-﻿namespace GenshinTheoryCrafting.Models
+﻿namespace GenshinTheoryCrafting.Models.Dto
 {
-    public class CharacterStats
+    public class CharacterStatsDto
     {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public CHRVision Vision { get; set; } = CHRVision.Pyro;
+        public CHRCLass Class { get; set; } = CHRCLass.Sword;
         public short Level { get; set; } = 1;
         public double BaseAttack { get; set; } = 26.07;
         public double BaseDefense { get; set; } = 61.03;
         public double HP { get; set; } = 1011.0;
-        public double CritRate { get; set; } = 5.0;
-        public decimal CritDamage { get; set; } = 50;
+        public double CritRate { get; set; } = 0.05;
+        public double CritDamage { get; set; } = 0.5;
         public double ElementalDmgBonus { get; set; } = 0.0;
         public decimal ElementalMastery { get; set; } = 0;
         public double HPPercentage { get; set; } = 0.0;
