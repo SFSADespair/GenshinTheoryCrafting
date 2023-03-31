@@ -1,4 +1,4 @@
-﻿namespace GenshinTheoryCrafting.Models.Dto
+﻿namespace GenshinTheoryCrafting.Models.Dto.Characters
 {
     public class CharacterStatsDto
     {
