@@ -1,4 +1,5 @@
 ﻿using GenshinTheoryCrafting.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -45,7 +46,7 @@ namespace GenshinTheoryCrafting.Controllers
             return Ok(character);
         }
 
-        [HttpPost("addCharacter")]
+        [HttpPost("addCharacter"), Authorize(Roles="Admin")]
         public async Task<ActionResult<List<Characters>>> AddCharacter(Characters character)
         {
             characters.Add(character);
@@ -53,7 +54,7 @@ namespace GenshinTheoryCrafting.Controllers
             return Ok(characters);
         }
 
-        [HttpPut("editCharacter")]
+        [HttpPut("editCharacter"), Authorize(Roles = "Admin")]
         public async Task<ActionResult<List<Characters>>> EditCharacter(Characters request)
         {
             var character = characters.Find(c => c.Id == request.Id);

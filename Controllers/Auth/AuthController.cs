@@ -1,5 +1,7 @@
 ﻿using GenshinTheoryCrafting.Models.Dto.User;
 using GenshinTheoryCrafting.Models.User;
+using GenshinTheoryCrafting.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -18,9 +20,19 @@ namespace GenshinTheoryCrafting.Controllers.Auth
         public static User user = new User();
         private readonly IConfiguration _configuration;
 
-        public AuthController(IConfiguration configuration)
+        private readonly IUserService _userService;
+
+        public AuthController(IConfiguration configuration, IUserService userService)
         {
             _configuration = configuration;
+            _userService = userService;
+        }
+
+
+        [HttpGet, Authorize]
+        public ActionResult<string> GetMyName()
+        {
+            return Ok(_userService.GetMyName());
         }
 
         [HttpPost("Register")]
@@ -31,6 +43,7 @@ namespace GenshinTheoryCrafting.Controllers.Auth
             user.Username = request.Username;
             user.Email = request.Email;
             user.PasswordHash = passwordHash;
+            user.Admin = false;
 
             return Ok(user);
         }
