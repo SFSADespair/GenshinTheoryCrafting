@@ -21,14 +21,17 @@ namespace GenshinTheoryCrafting.Controllers.Auth
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, "User"),
-                new Claim(ClaimTypes.Role, "Admin")
+                new Claim(ClaimTypes.Role, "User")
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
                         _configuration.GetSection("AppSettings:Token").Value!
                     ));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            if (user.Admin)
+                claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+            
 
             var token = new JwtSecurityToken(
                     claims: claims,

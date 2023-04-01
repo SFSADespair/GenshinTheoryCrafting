@@ -1,11 +1,11 @@
 ﻿using System.Security.Claims;
 
-namespace GenshinTheoryCrafting.Services
+namespace GenshinTheoryCrafting.Services.User
 {
     public class UserService : IUserService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public UserService(IHttpContextAccessor httpContextAccessor )
+        public UserService(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }

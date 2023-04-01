@@ -1,4 +1,4 @@
-﻿namespace GenshinTheoryCrafting.Services
+﻿namespace GenshinTheoryCrafting.Services.User
 {
     public interface IUserService
     {

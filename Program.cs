@@ -1,4 +1,5 @@
-using GenshinTheoryCrafting.Services;
+global using Microsoft.AspNetCore.Authentication;
+using GenshinTheoryCrafting.Services.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;

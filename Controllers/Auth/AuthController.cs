@@ -1,6 +1,6 @@
 ﻿using GenshinTheoryCrafting.Models.Dto.User;
 using GenshinTheoryCrafting.Models.User;
-using GenshinTheoryCrafting.Services;
+using GenshinTheoryCrafting.Services.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -65,6 +65,29 @@ namespace GenshinTheoryCrafting.Controllers.Auth
 
             CrtToken crtToken = new CrtToken(_configuration);
 
+            string token = crtToken.CreateToken(user);
+            
+            return Ok(token);
+        }
+
+        [HttpPut("RegisterAdmin"), Authorize]
+        public async Task<ActionResult<User>> PutAdmin(UserDto request)
+        { 
+            if (request.Username == null)
+                throw new ArgumentNullException(nameof(request.Username));
+
+            if (user.Username != request.Username)
+                return NotFound();
+
+            if (user.Email != request.Email)
+                return NotFound();
+
+            if (user.Admin)
+                return BadRequest();
+
+            user.Admin = true;
+
+            CrtToken crtToken = new CrtToken(_configuration);
             string token = crtToken.CreateToken(user);
 
             return Ok(token);
