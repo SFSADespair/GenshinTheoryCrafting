@@ -63,7 +63,6 @@ namespace GenshinTheoryCrafting.Controllers.Auth
             {
                 return BadRequest(ex.Message);
             }
-            throw new Exception("User Not Found");
 
             return Ok(result);
         }
@@ -88,7 +87,7 @@ namespace GenshinTheoryCrafting.Controllers.Auth
             } catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-            } throw new Exception("User Not Found");
+            }
 
             return Ok(result);
         }

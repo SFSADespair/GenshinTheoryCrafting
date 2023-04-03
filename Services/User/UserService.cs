@@ -72,8 +72,9 @@ namespace GenshinTheoryCrafting.Services.User
             if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
                 return "Bad Request";
 
-            CrtToken crtToken = new CrtToken(configuration);
+            user.Admin = request.Admin;
 
+            CrtToken crtToken = new CrtToken(configuration);
             string token = crtToken.CreateToken(user);
 
             return token;
