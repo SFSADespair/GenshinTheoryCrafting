@@ -8,7 +8,7 @@ namespace GenshinTheoryCrafting.Services.User
     {
         string GetMyName();
         Users Register(UserDto request);
-        string Login(UserDto request);
-        string RegAdmin(UserDto request);
+        string Login(UserDto request, IConfiguration configuration);
+        string RegAdmin(UserDto request, IConfiguration configuration);
     }
 }

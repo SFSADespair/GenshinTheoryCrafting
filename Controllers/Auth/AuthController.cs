@@ -44,7 +44,7 @@ namespace GenshinTheoryCrafting.Controllers.Auth
         [HttpPost("Login")]
         public async Task<ActionResult<Users>> Login(UserDto request)
         {
-            var result = _userService.Login(request);
+            var result = _userService.Login(request, _configuration);
             try
             {
                 switch (result)
@@ -71,7 +71,7 @@ namespace GenshinTheoryCrafting.Controllers.Auth
         [HttpPut("RegisterAdmin"), Authorize]
         public async Task<ActionResult<Users>> PutAdmin(UserDto request)
         {
-            var result = _userService.Login(request);
+            var result = _userService.RegAdmin(request, _configuration);
             try
             {
                 switch (result)

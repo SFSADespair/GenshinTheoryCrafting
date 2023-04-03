@@ -1,4 +1,4 @@
-﻿using GenshinTheoryCrafting.Models.Users;
+﻿using GenshinTheoryCrafting.Models;
 
 namespace GenshinTheoryCrafting.Data
 {
@@ -9,6 +9,6 @@ namespace GenshinTheoryCrafting.Data
             
         }
 
-        public DbSet<User> Users => Set<User>();
+        public DbSet<Users> Users => Set<Users>();
     }
 }
