@@ -38,13 +38,13 @@ namespace GenshinTheoryCrafting.Controllers.Auth
         [HttpPost("Register")]
         public async Task<ActionResult<Users>> Register(UserDto request)
         {
-            return Ok(_userService.Register(request));
+            return Ok(await _userService.Register(request));
         }
 
         [HttpPost("Login")]
         public async Task<ActionResult<Users>> Login(UserDto request)
         {
-            var result = _userService.Login(request, _configuration);
+            var result = await _userService.Login(request, _configuration);
             try
             {
                 switch (result)
@@ -70,7 +70,7 @@ namespace GenshinTheoryCrafting.Controllers.Auth
         [HttpPut("RegisterAdmin"), Authorize]
         public async Task<ActionResult<Users>> PutAdmin(UserDto request)
         {
-            var result = _userService.RegAdmin(request, _configuration);
+            var result = await _userService.RegAdmin(request, _configuration);
             try
             {
                 switch (result)

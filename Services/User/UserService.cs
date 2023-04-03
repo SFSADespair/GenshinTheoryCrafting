@@ -25,7 +25,7 @@ namespace GenshinTheoryCrafting.Services.User
             return result;
         }
 
-        public string Login(UserDto request, IConfiguration configuration)
+        public async Task<string> Login(UserDto request, IConfiguration configuration)
         {
             if (request.Username == null)
                 throw new ArgumentNullException(nameof(request.Username));
@@ -46,7 +46,7 @@ namespace GenshinTheoryCrafting.Services.User
             return token;
         }
 
-        public Users Register(UserDto request)
+        public async Task<Users> Register(UserDto request)
         {
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
@@ -58,7 +58,7 @@ namespace GenshinTheoryCrafting.Services.User
             return user; 
         }
 
-        public string RegAdmin(UserDto request, IConfiguration configuration)
+        public async Task<string> RegAdmin(UserDto request, IConfiguration configuration)
         {
             if (request.Username == null)
                 throw new ArgumentNullException(nameof(request.Username));
