@@ -1,6 +1,6 @@
-﻿namespace GenshinTheoryCrafting.Models.User
+﻿namespace GenshinTheoryCrafting.Models
 {
-    public class User
+    public class Users
     {
         public int Id { get; set; }
         public string Username { get; set; } = string.Empty;

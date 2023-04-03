@@ -1,4 +1,4 @@
-﻿using GenshinTheoryCrafting.Models.User;
+﻿using GenshinTheoryCrafting.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -16,7 +16,7 @@ namespace GenshinTheoryCrafting.Controllers.Auth
             _configuration = configuration;
         }
 
-        public string CreateToken(User user)
+        public string CreateToken(Users user)
         {
             List<Claim> claims = new List<Claim>
             {

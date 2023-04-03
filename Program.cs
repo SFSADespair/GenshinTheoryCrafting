@@ -1,5 +1,7 @@
 global using Microsoft.AspNetCore.Authentication;
-using GenshinTheoryCrafting.Services.User;
+global using Microsoft.EntityFrameworkCore;
+global using GenshinTheoryCrafting.Data;
+global using GenshinTheoryCrafting.Services.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -8,6 +10,9 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDbContext<DataContext>(options => 
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
