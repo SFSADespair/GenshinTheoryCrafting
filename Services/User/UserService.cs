@@ -15,59 +15,88 @@ namespace GenshinTheoryCrafting.Services.User
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<string> Login(UserDto request, IConfiguration configuration)
+        public async Task<ServiceResponse<string>> Login(UserDto request, IConfiguration configuration)
         {
+            var serviceResponse = new ServiceResponse<string>();
+
             if (request.Username == null)
                 throw new ArgumentNullException(nameof(request.Username));
 
             if (user.Username != request.Username)
-                return "Not Found";
+            {
+                serviceResponse.Data = "Not Found";
+                return serviceResponse;
+            }
 
             if (user.Email != request.Email)
-                return "Not Found";
+            {
+                serviceResponse.Data = "Not Found";
+                return serviceResponse;
+            }
 
             if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-                return "Not Found";
+            {
+                serviceResponse.Data = "Not Found";
+                return serviceResponse;
+            }
 
             CrtToken crtToken = new CrtToken(configuration);
-
+            var tServiceResponse = new ServiceResponse<string>();
             string token = crtToken.CreateToken(user);
 
-            return token;
+            tServiceResponse.Data = token;
+
+            return tServiceResponse;
         }
 
-        public async Task<Users> Register(UserDto request)
+        public async Task<ServiceResponse<Users>> Register(UserDto request)
         {
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            var serviceResponse = new ServiceResponse<Users>();
 
             user.Username = request.Username;
             user.Email = request.Email;
             user.PasswordHash = passwordHash;
             user.Admin = false;
+            serviceResponse.Data = user;
 
-            return user; 
+            return serviceResponse; 
         }
 
-        public async Task<string> RegAdmin(UserDto request, IConfiguration configuration)
+        public async Task<ServiceResponse<string>> RegAdmin(UserDto request, IConfiguration configuration)
         {
+            var serviceResponse = new ServiceResponse<string>();
+
             if (request.Username == null)
                 throw new ArgumentNullException(nameof(request.Username));
 
             if (user.Username != request.Username)
-                return "Not Found";
+            {
+                serviceResponse.Message = "Not Found";
+                return serviceResponse;
+            }
 
             if (user.Email != request.Email)
-                return "Not Found";
+            {
+                serviceResponse.Message = "Not Found";
+                return serviceResponse;
+            }
 
             if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-                return "Bad Request";
+            {
+                serviceResponse.Message = "Not Found";
+                return serviceResponse;
+            }
 
             user.Admin = request.Admin;
 
             CrtToken crtToken = new CrtToken(configuration);
+            var tServiceResponse = new ServiceResponse<string>();
             string token = crtToken.CreateToken(user);
 
-            return token;
+            tServiceResponse.Data = token;
+
+            return tServiceResponse;
         }
     }
 
