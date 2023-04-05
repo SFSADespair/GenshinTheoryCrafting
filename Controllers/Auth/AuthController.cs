@@ -29,12 +29,6 @@ namespace GenshinTheoryCrafting.Controllers.Auth
             _userService = userService;
         }
 
-        [HttpGet, Authorize]
-        public ActionResult<string> GetMyName()
-        {
-            return Ok(_userService.GetMyName());
-        }
-
         [HttpPost("Register")]
         public async Task<ActionResult<Users>> Register(UserDto request)
         {

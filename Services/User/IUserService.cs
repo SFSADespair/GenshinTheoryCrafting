@@ -6,7 +6,6 @@ namespace GenshinTheoryCrafting.Services.User
 {
     public interface IUserService
     {
-        string GetMyName();
         Task<Users> Register(UserDto request);
         Task<string> Login(UserDto request, IConfiguration configuration);
         Task<string> RegAdmin(UserDto request, IConfiguration configuration);
