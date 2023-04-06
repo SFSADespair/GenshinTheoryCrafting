@@ -2,6 +2,7 @@ global using Microsoft.AspNetCore.Authentication;
 global using Microsoft.EntityFrameworkCore;
 global using GenshinTheoryCrafting.Data;
 global using GenshinTheoryCrafting.Services.User;
+global using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -30,6 +31,8 @@ builder.Services.AddSwaggerGen(options =>
         options.OperationFilter<SecurityRequirementsOperationFilter>();
     }
 );
+
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddAuthentication().AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters

@@ -39,22 +39,6 @@ namespace GenshinTheoryCrafting.Controllers.Auth
         public async Task<ActionResult<ServiceResponse<Users>>> Login(UserDto request)
         {
             var result = await _userService.Login(request, _configuration);
-            try
-            {
-                switch (result.Message)
-                {
-                    case "Not Found":
-                        return NotFound();
-                    case "Bad Request":
-                        return BadRequest();
-                    default:
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
 
             return Ok(result);
         }
@@ -63,21 +47,6 @@ namespace GenshinTheoryCrafting.Controllers.Auth
         public async Task<ActionResult<ServiceResponse<Users>>> PutAdmin(UserDto request)
         {
             var result = await _userService.RegAdmin(request, _configuration);
-            try
-            {
-                switch (result.Message)
-                {
-                    case "Not Found":
-                        return NotFound();
-                    case "Bad Request":
-                        return BadRequest();
-                    default:
-                        break;
-                }
-            } catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
 
             return Ok(result);
         }
