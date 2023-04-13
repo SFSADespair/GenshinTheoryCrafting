@@ -32,23 +32,31 @@ namespace GenshinTheoryCrafting.Controllers.Auth
         [HttpPost("Register")]
         public async Task<ActionResult<ServiceResponse<Users>>> Register(UserDto request)
         {
+            if (request is null)
+                return BadRequest(request);
+
             return Ok(await _userService.Register(request));
         }
 
         [HttpPost("Login")]
         public async Task<ActionResult<ServiceResponse<Users>>> Login(UserDto request)
         {
-            var result = await _userService.Login(request, _configuration);
+            var response = await _userService.Login(request, _configuration);
+            if (response is null)
+                return NotFound(response);
 
-            return Ok(result);
+            return Ok(response);
         }
 
         [HttpPut("RegisterAdmin"), Authorize]
         public async Task<ActionResult<ServiceResponse<Users>>> PutAdmin(UserDto request)
         {
-            var result = await _userService.RegAdmin(request, _configuration);
+            var response = await _userService.RegAdmin(request, _configuration);
 
-            return Ok(result);
+            if (response.Data is null)
+                return NotFound(response);
+
+            return Ok(response);
         }
     }
 }

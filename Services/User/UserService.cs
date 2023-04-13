@@ -1,9 +1,16 @@
-﻿
-using GenshinTheoryCrafting.Controllers.Auth;
+﻿using GenshinTheoryCrafting.Controllers.Auth;
 using GenshinTheoryCrafting.Models;
 using GenshinTheoryCrafting.Models.Dto.User;
 using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 
 namespace GenshinTheoryCrafting.Services.User
 {
@@ -95,13 +102,12 @@ namespace GenshinTheoryCrafting.Services.User
                 CrtToken crtToken = new CrtToken(configuration);
 
                 token = crtToken.CreateToken(user);
+                tServiceResponse.Data = _mapper.Map<string>(token);
             } catch (Exception ex)
             {
                 tServiceResponse.Message = ex.Message;
                 tServiceResponse.Success = false;
             }
-
-            tServiceResponse.Data = _mapper.Map<string>(token);
 
             return tServiceResponse;
         }
