@@ -17,16 +17,20 @@ namespace GenshinTheoryCrafting.Services.User
     public class UserService : IUserService
     {
         private readonly IMapper _mapper;
+        private readonly DataContext _context;
         public static Users user = new Users();
 
-        public UserService( IMapper mapper)
+        public UserService(IMapper mapper, DataContext context)
         {
             _mapper = mapper;
+            _context = context;
         }
 
         public async Task<ServiceResponse<string>> Login(UserDto request, IConfiguration configuration)
         {
             var tServiceResponse = new ServiceResponse<string>();
+            var dbUsers = await _context.Users.ToListAsync();
+
             try
             {
                 if (request.Username is null)
@@ -54,22 +58,31 @@ namespace GenshinTheoryCrafting.Services.User
             return tServiceResponse;
         }
 
-        public async Task<ServiceResponse<Users>> Register(UserDto request)
+        public async Task<ServiceResponse<List<Users>>> Register(UserDto request)
         {
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
-            var serviceResponse = new ServiceResponse<Users>();
+            var serviceResponse = new ServiceResponse<List<Users>>();
 
             try
             {
                 if (request is null)
                     throw new Exception("There are some empty paramaters that need data.");
 
-                user.Username = request.Username;
-                user.Email = request.Email;
-                user.PasswordHash = passwordHash;
-                user.Admin = false;
+                List<Users> req = new List<Users>
+                {
+                    new Users
+                    {
+                        Username = request.Username,
+                        Email = request.Email,
+                        PasswordHash = passwordHash,
+                        Admin = false
+                    }
+                };
 
-                serviceResponse.Data = _mapper.Map<Users>(user);
+                _context.Users.Add(req[0]);
+                await _context.SaveChangesAsync();
+
+                serviceResponse.Data = _mapper.Map<List<Users>>(req);
             } catch (Exception ex)
             {
                 serviceResponse.Success = false;
@@ -111,6 +124,34 @@ namespace GenshinTheoryCrafting.Services.User
 
             return tServiceResponse;
         }
+
+        //public async Task<ServiceResponse<string>> Delete(UserDto request)
+        //{
+        //    var serviceResponse = new ServiceResponse<string>();
+        //    try
+        //    {
+        //        if (request.Username is null)
+        //            throw new Exception($"User with username '{request.Username}' not found.");
+
+        //        if (user.Username != request.Username)
+        //            throw new Exception($"User with username '{request.Username}' not found.");
+
+        //        if (user.Email != request.Email)
+        //            throw new Exception("Email or password is incorrect.");
+
+        //        if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+        //            throw new Exception("Email or password is incorrect.");
+
+        //        serviceResponse.Message = "Deleted User";
+        //        serviceResponse.Success = true;
+        //    } catch (Exception ex)
+        //    {
+        //        serviceResponse.Message = ex.Message;
+        //        serviceResponse.Success = false;
+        //    }
+
+        //    return serviceResponse;
+        //}
     }
 
 }
