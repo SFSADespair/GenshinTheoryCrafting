@@ -8,7 +8,7 @@ namespace GenshinTheoryCrafting.Services.User
     {
         Task<ServiceResponse<List<Users>>> Register(UserDto request);
         Task<ServiceResponse<string>> Login(LoginDto request, IConfiguration configuration);
-        Task<ServiceResponse<string>> RegAdmin(UserDto request, IConfiguration configuration);
+        Task<ServiceResponse<string>> RegAdmin(LoginDto request, IConfiguration configuration);
         //Task<ServiceResponse<string>> Delete(UserDto request);
     }
 }

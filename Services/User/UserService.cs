@@ -33,20 +33,16 @@ namespace GenshinTheoryCrafting.Services.User
             try
             {
                 var dbUser = await _context.Users.Where(x => x.Username == request.Username).ToListAsync();
-                var dbPass = await _context.Users.Where(x => x.PasswordHash == BCrypt.Net.BCrypt.HashPassword(request.Password))
-                    .ToListAsync();
-                if (dbUser != null)
-                {
-                    if (dbPass != null)
-                    {
-                        CrtToken crtToken = new CrtToken(configuration);
-                        string token = crtToken.CreateToken(dbUser.FirstOrDefault());
 
-                        tServiceResponse.Data = _mapper.Map<string>(token);
-                    } else
-                        throw new Exception("Email or password is incorrect.");
-                } else
-                    throw new Exception($"User with username '{request.Username}' not found.");
+                if (BCrypt.Net.BCrypt.Verify(request.Password, dbUser[0].PasswordHash))
+                {
+                    CrtToken crtToken = new CrtToken(configuration);
+                    string token = crtToken.CreateToken(dbUser[0]);
+
+                    tServiceResponse.Data = _mapper.Map<string>(token);
+                }
+                else
+                    throw new Exception("Email or password is incorrect.");
             }
             catch (Exception ex)
             {
@@ -97,36 +93,29 @@ namespace GenshinTheoryCrafting.Services.User
             return serviceResponse; 
         }
 
-        public async Task<ServiceResponse<string>> RegAdmin(UserDto request, IConfiguration configuration)
+        public async Task<ServiceResponse<string>> RegAdmin(LoginDto request, IConfiguration configuration)
         {
             var tServiceResponse = new ServiceResponse<string>();
-            var dbUsers = await _context.Users.ToListAsync();
-
             try
             {
-                foreach (var dbUser in dbUsers)
+                var dbUser = await _context.Users.Where(x => x.Username == request.Username).ToListAsync();
+
+                if (BCrypt.Net.BCrypt.Verify(request.Password, dbUser[0].PasswordHash))
                 {
-                    if (request.Username is null)
-                        throw new Exception($"User with username '{request.Username}' not found.");
-
-                    if (dbUser.Username != request.Username)
-                        throw new Exception($"User with username '{request.Username}' not found.");
-
-                    if (dbUser.Email != request.Email)
-                        throw new Exception("Email or password is incorrect.");
-
-                    if (!BCrypt.Net.BCrypt.Verify(request.Password, dbUser.PasswordHash))
-                        throw new Exception("Email or password is incorrect.");
-
+                    dbUser[0].Admin = true;
+                    Console.WriteLine(dbUser[0].Admin);
                     CrtToken crtToken = new CrtToken(configuration);
-                    string token = crtToken.CreateToken(dbUser);
+                    string token = crtToken.CreateToken(dbUser[0]);
 
                     tServiceResponse.Data = _mapper.Map<string>(token);
                 }
-            } catch (Exception ex)
+                else
+                    throw new Exception("Email or password is incorrect.");
+            }
+            catch (Exception ex)
             {
-                tServiceResponse.Message = ex.Message;
                 tServiceResponse.Success = false;
+                tServiceResponse.Message = ex.Message;
             }
 
             return tServiceResponse;

@@ -41,6 +41,8 @@ namespace GenshinTheoryCrafting.Controllers.Auth
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
+            Console.WriteLine(user.Admin);
+
             return jwt;
         }
     }

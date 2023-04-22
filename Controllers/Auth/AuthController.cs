@@ -49,7 +49,7 @@ namespace GenshinTheoryCrafting.Controllers.Auth
         }
 
         [HttpPut("RegisterAdmin"), Authorize]
-        public async Task<ActionResult<ServiceResponse<Users>>> PutAdmin(UserDto request)
+        public async Task<ActionResult<ServiceResponse<Users>>> PutAdmin(LoginDto request)
         {
             var response = await _userService.RegAdmin(request, _configuration);
 
