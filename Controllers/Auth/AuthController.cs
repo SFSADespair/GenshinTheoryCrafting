@@ -39,10 +39,10 @@ namespace GenshinTheoryCrafting.Controllers.Auth
         }
 
         [HttpPost("Login")]
-        public async Task<ActionResult<ServiceResponse<Users>>> Login(UserDto request)
+        public async Task<ActionResult<ServiceResponse<Users>>> Login(LoginDto request)
         {
             var response = await _userService.Login(request, _configuration);
-            if (response is null)
+            if (response.Data is null)
                 return NotFound(response);
 
             return Ok(response);
@@ -54,7 +54,10 @@ namespace GenshinTheoryCrafting.Controllers.Auth
             var response = await _userService.RegAdmin(request, _configuration);
 
             if (response.Data is null)
-                return NotFound(response);
+            {
+                Console.WriteLine(response.Data);
+                return NotFound(response.Message);
+            }
 
             return Ok(response);
         }

@@ -26,30 +26,29 @@ namespace GenshinTheoryCrafting.Services.User
             _context = context;
         }
 
-        public async Task<ServiceResponse<string>> Login(UserDto request, IConfiguration configuration)
+        public async Task<ServiceResponse<string>> Login(LoginDto request, IConfiguration configuration)
         {
             var tServiceResponse = new ServiceResponse<string>();
-            var dbUsers = await _context.Users.ToListAsync();
 
             try
             {
-                if (request.Username is null)
+                var dbUser = await _context.Users.Where(x => x.Username == request.Username).ToListAsync();
+                var dbPass = await _context.Users.Where(x => x.PasswordHash == BCrypt.Net.BCrypt.HashPassword(request.Password))
+                    .ToListAsync();
+                if (dbUser != null)
+                {
+                    if (dbPass != null)
+                    {
+                        CrtToken crtToken = new CrtToken(configuration);
+                        string token = crtToken.CreateToken(dbUser.FirstOrDefault());
+
+                        tServiceResponse.Data = _mapper.Map<string>(token);
+                    } else
+                        throw new Exception("Email or password is incorrect.");
+                } else
                     throw new Exception($"User with username '{request.Username}' not found.");
-
-                if (user.Username != request.Username)
-                    throw new Exception($"User with username '{request.Username}' not found.");
-
-                if (user.Email != request.Email)
-                    throw new Exception("Email or password is incorrect.");
-
-                if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-                    throw new Exception("Email or password is incorrect.");
-
-                CrtToken crtToken = new CrtToken(configuration);
-                string token = crtToken.CreateToken(user);
-
-                tServiceResponse.Data = _mapper.Map<string>(token);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 tServiceResponse.Success = false;
                 tServiceResponse.Message = ex.Message;
@@ -83,6 +82,12 @@ namespace GenshinTheoryCrafting.Services.User
                 await _context.SaveChangesAsync();
 
                 serviceResponse.Data = _mapper.Map<List<Users>>(req);
+
+                var dbUsers = await _context.Users.ToListAsync();
+                foreach (var dbUser in dbUsers)
+                {
+                    Console.WriteLine(dbUser.Username);
+                }
             } catch (Exception ex)
             {
                 serviceResponse.Success = false;
@@ -95,27 +100,29 @@ namespace GenshinTheoryCrafting.Services.User
         public async Task<ServiceResponse<string>> RegAdmin(UserDto request, IConfiguration configuration)
         {
             var tServiceResponse = new ServiceResponse<string>();
-            string token = "";
+            var dbUsers = await _context.Users.ToListAsync();
+
             try
             {
-                if (request.Username is null)
-                    throw new Exception($"User with username '{request.Username}' not found.");
+                foreach (var dbUser in dbUsers)
+                {
+                    if (request.Username is null)
+                        throw new Exception($"User with username '{request.Username}' not found.");
 
-                if (user.Username != request.Username)
-                    throw new Exception($"User with username '{request.Username}' not found.");
+                    if (dbUser.Username != request.Username)
+                        throw new Exception($"User with username '{request.Username}' not found.");
 
-                if (user.Email != request.Email)
-                    throw new Exception("Email or password is incorrect.");
+                    if (dbUser.Email != request.Email)
+                        throw new Exception("Email or password is incorrect.");
 
-                if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-                    throw new Exception("Email or password is incorrect.");
+                    if (!BCrypt.Net.BCrypt.Verify(request.Password, dbUser.PasswordHash))
+                        throw new Exception("Email or password is incorrect.");
 
-                user.Admin = request.Admin;
+                    CrtToken crtToken = new CrtToken(configuration);
+                    string token = crtToken.CreateToken(dbUser);
 
-                CrtToken crtToken = new CrtToken(configuration);
-
-                token = crtToken.CreateToken(user);
-                tServiceResponse.Data = _mapper.Map<string>(token);
+                    tServiceResponse.Data = _mapper.Map<string>(token);
+                }
             } catch (Exception ex)
             {
                 tServiceResponse.Message = ex.Message;
